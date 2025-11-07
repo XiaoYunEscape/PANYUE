@@ -2,12 +2,21 @@
 header {
   position: relative;
   background-color: #ededed;
-  padding: 10px 12px;
+  padding: 10px 16px;
   display: flex;
   align-items: center;
-  justify-content: center; /* 让标题在中间 */
-  height: 45px;
+  justify-content: center;
+  height: 48px;
   border-bottom: 1px solid #dcdcdc;
+  box-sizing: border-box;
+}
+
+header h1 {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+  text-align: center;
+  flex: 1;
 }
 
 /* 返回按钮样式 */
@@ -22,32 +31,58 @@ header {
   color: #333;
   cursor: pointer;
 }
-
-/* 标题 */
-header h1 {
-  margin: 0;
-  font-size: 17px;
-  color: #333;
-  text-align: center;
-  white-space: nowrap;       /* 防止文字换行 */
-  overflow: hidden;
-  text-overflow: ellipsis;   /* 超出省略号 */
-  max-width: 60%;            /* 避免挤压返回按钮 */
+/* ===== 底部导航栏 ===== */
+footer {
+  background-color: #ededed;
+  border-top: 1px solid #dcdcdc;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 56px;
+  box-sizing: border-box;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
-/* ===== 自适应小屏优化 ===== */
-@media (max-width: 480px) {
-  header {
-    padding: 8px 10px;
-    height: 42px;
-  }
+.nav-btn {
+  flex: 1;
+  text-align: center;
+  color: #333;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 8px 0;
+  transition: 0.2s;
+}
 
-  #backBtn {
-    font-size: 15px;
+.nav-btn:hover {
+  background-color: #ddd;
+}
+
+.nav-btn.active {
+  font-weight: bold;
+  color: #07c160;
+}
+
+/* ======== 响应式调整（适配手机） ======== */
+@media (max-width: 768px) {
+  header {
+    padding: 8px 12px;
+    height: 42px;
   }
 
   header h1 {
     font-size: 16px;
-    max-width: 65%;
+  }
+
+  footer {
+    height: 50px;
+  }
+
+  .nav-btn {
+    font-size: 15px;
+    padding: 6px 0;
   }
 }
+
+
