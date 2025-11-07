@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="stylesheet" href="nav.css">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>通讯录</title>
+<style>
+  body{margin:0;font-family:"Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;background:#f5f5f5;display:flex;flex-direction:column;height:100vh;color:#333;}
+  #backBtn{background:none;border:none;cursor:pointer;color:#333;}
+  main{flex:1;padding:16px;overflow:auto;}
+  .hint{background:#fff;padding:14px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.06);max-width:720px;margin:8px auto;text-align:center;}
+  .friends-list{max-width:720px;margin:8px auto;display:flex;flex-direction:column;gap:10px;}
+  .friend{display:flex;align-items:center;justify-content:space-between;background:#fff;padding:12px 14px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.06);cursor:pointer;transition:transform .12s, box-shadow .12s;text-decoration:none;color:inherit;}
+  .friend:hover{ transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,0.08); }
+  .friend .meta{ display:flex; gap:12px; align-items:center; }
+  .avatar{width:44px; height:44px; border-radius:8px; background:linear-gradient(180deg,#e9eef6,#f7f9fc); display:inline-flex; align-items:center; justify-content:center; font-weight:bold; color:#3b6; border:1px solid #eee;}
+  .info small{ color:gray; }
+  .status{ font-size:13px; color:gray; }
+  .nav-btn.active{background:#cccccc;font-weight:600;}
+  
+  /* 添加好友弹窗样式 */
+  #addFriendModal {
+    display:none;
+    position:fixed;
+    top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.5);
+    justify-content:center;
+    align-items:center;
+  }
+  #addFriendModal .modal-content {
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    width:90%;
+    max-width:400px;
+  }
+  #addFriendModal input {
+    width:100%;
+    padding:8px;
+    margin:8px 0;
+    border-radius:6px;
+    border:1px solid #ccc;
+  }
+  #addFriendModal button {
+    padding:8px 12px;
+    border:none;
+    border-radius:6px;
+    background:#07c160;
+    color:#fff;
+    cursor:pointer;
+  }
+  #addFriendModal button:hover { background:#06b157; }
+</style>
+</head>
+<body>
+<header>
+  <button id="backBtn" title="返回" onclick="location.href='VX_00.html'">← 返回</button>
+  <h1>通讯录</h1>
+  <button id="addFriendBtn" style="margin-left:auto;">添加好友</button>
+</header>
+
+<main id="main"></main>
+
+<footer>
+  <a class="nav-btn" id="nav-msg" href="VX_00.html">消息</a>
+  <a class="nav-btn active" id="nav-contacts" href="#">通讯录</a>
+  <a class="nav-btn" id="nav-moments" href="#">生活圈</a>
+  <a class="nav-btn" id="nav-me" href="#">我</a>
+</footer>
+
+<!-- 添加好友弹窗 -->
+<div id="addFriendModal">
+  <div class="modal-content">
+    <h3>添加好友</h3>
+    <input type="text" id="newFriendName" placeholder="好友昵称">
+    <div id="verifyQuestionText" style="margin:6px 0;color:#333;"></div>
+    <input type="text" id="verifyAnswer" placeholder="回答验证问题">
+    <button id="addFriendConfirm">确认添加</button>
+    <button onclick="location.href='FriendList.html'">返回</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const main = document.getElementById('main');
+  const currentUser = localStorage.getItem("currentUser") || "";
+
+  let mapping = {
+    "xixi2333": {
+      displayName:"嘻嘻",
+      friends:[
+        {name:"小盼宝宝", online:false},
+        {name:"官谷店", online:true},
+        {name:"小云", online:true}
+      ]
+    },
+    "PAN1108": {
+      displayName:"平底锅",
+      friends:[
+        {name:"小希", online:false},
+        {name:"妈妈", online:true},
+        {name:"弟弟", online:true}
+      ]
+    }
+  };
+
+  // 聊天记录对象
+  
+  
+  function renderFriendList(){
+    const info = mapping[currentUser];
+    if(!info){
+      main.innerHTML = '<div class="hint">未知用户：'+currentUser+'</div>';
+      document.getElementById('nav-me').onclick = e=>{e.preventDefault();location.href='Me.html'};
+      return;
+    }
+    
+    main.innerHTML = '';
+    const head = document.createElement('div');
+    head.style.margin = '10px auto 18px';
+    head.style.maxWidth = '720px';
+    head.innerHTML = `<div style="font-size:15px;color:gray;">当前用户：<strong>${info.displayName}</strong> （${currentUser}）</div>`;
+    main.appendChild(head);
+
+    const list = document.createElement('div');
+    list.className = 'friends-list';
+
+    info.friends.forEach(f => {
+      const a = document.createElement('a');
+      a.className = 'friend';
+      a.href = `Message.html?friend=${encodeURIComponent(f.name)}&user=${encodeURIComponent(currentUser)}`;
+      const statusText = f.online ? "在线" : "离线";
+      const statusColor = f.online ? "green" : "gray";
+      a.innerHTML = `
+        <div class="meta">
+          <div class="avatar">${f.name.slice(0,2)}</div>
+          <div class="info">
+            <div style="font-size:15px;"><strong>${f.name}</strong></div>
+            <div><small>点击进入聊天</small></div>
+          </div>
+        </div>
+        <div class="status" style="color:${statusColor}">${statusText}</div>
+      `;
+      list.appendChild(a);
+    });
+
+    main.appendChild(list);
+  }
+
+  renderFriendList();
+
+  // 底部导航
+  document.querySelectorAll('.nav-btn').forEach(btn=>btn.classList.remove('active'));
+  document.getElementById('nav-contacts').classList.add('active');
+  document.getElementById('nav-moments').onclick = e=>{e.preventDefault();location.href='Moments.html'};
+  document.getElementById('nav-me').onclick = e=>{e.preventDefault();location.href='Me.html'};
+
+  // ========== 添加好友 ==========
+  const addFriendBtn = document.getElementById("addFriendBtn");
+  const addFriendModal = document.getElementById("addFriendModal");
+  const addFriendConfirm = document.getElementById("addFriendConfirm");
+  const newFriendNameInput = document.getElementById("newFriendName");
+  const verifyQuestionText = document.getElementById("verifyQuestionText");
+  const verifyAnswer = document.getElementById("verifyAnswer");
+
+  
+  const friendVerifyQuestions = {
+    "小盼宝宝": "我最喜欢的颜色是？",
+    "官谷店": "我们的第一次聊天是关于什么？",
+    "小云": "我最常说的一句话是？",
+    "小希": "我最喜欢的动物是？",
+    "妈妈": "我最喜欢的菜是什么？",
+    "你相信光吗": "全世界我最最喜欢的人是？"
+  };
+  const correctAnswers = {
+    "小盼宝宝": "蓝色",
+    "官谷店": "催发货",
+    "小云": "AI太好用了",
+    "小希": "猫",
+    "妈妈": "红烧肉",
+    "你相信光吗": "姐姐"
+  };
+
+  addFriendBtn.onclick = () => {
+    newFriendNameInput.value = "";
+    verifyAnswer.value = "";
+    verifyQuestionText.textContent = "";
+    addFriendModal.style.display = "flex";
+  };
+
+  newFriendNameInput.addEventListener("input", () => {
+    const name = newFriendNameInput.value.trim();
+    verifyQuestionText.textContent = friendVerifyQuestions[name] ? "回答验证问题：" + friendVerifyQuestions[name] : "";
+  });
+
+  addFriendConfirm.onclick = () => {
+    const name = newFriendNameInput.value.trim();
+    const ans = verifyAnswer.value.trim();
+    if(!name){ alert("请输入好友名！"); return; }
+    if(!friendVerifyQuestions[name]){ alert("无法添加该用户！"); return; }
+    if(ans !== correctAnswers[name]){ alert("验证失败！"); return; }
+
+    // 动态添加好友
+    if(!mapping[currentUser].friends.some(f=>f.name===name)){
+      mapping[currentUser].friends.push({name:name, online:true});
+    }
+    addFriendModal.style.display="none";
+    alert("好友添加成功！");
+    renderFriendList();
+  };
+
+})();
+</script>
+</body>
+</html>

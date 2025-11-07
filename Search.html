@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>搜索</title>
+<link rel="stylesheet" href="nav.css">
+<style>
+body {
+    margin: 0;
+    font-family: "Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;
+    background:#f5f5f5;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    color:#333;
+}
+header {
+    position:relative;
+    background:#ededed;
+    padding:12px 16px;
+    border-bottom:1px solid #dcdcdc;
+    display:flex;
+    align-items:center;
+}
+header h1 {
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    margin:0;
+    font-size:18px;
+}
+#backBtn {
+    background:none;
+    border:none;
+    cursor:pointer;
+    color:#333;
+}
+main {
+    flex:1;
+    padding:16px;
+    overflow:auto;
+}
+#searchBar {
+    display:flex;
+    gap:6px;
+    margin-bottom:12px;
+}
+#searchBox {
+    flex:1;
+    padding:8px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+#searchBtn, #addFriendBtn {
+    padding:8px 12px;
+    border:none;
+    border-radius:6px;
+    background:#07c160;
+    color:#fff;
+    cursor:pointer;
+}
+.result-list { display:flex; flex-direction:column; gap:10px; max-width:720px; margin:0 auto; }
+.result-card { background:#fff; padding:12px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+.chat-line { display:flex; margin:6px 0; }
+.chat-line.me { justify-content:flex-end; }
+.chat-line.them { justify-content:flex-start; }
+.chat-bubble { padding:8px 12px; border-radius:10px; max-width:70%; word-wrap:break-word; }
+.chat-line.me .chat-bubble { background:#d4efdf; text-align:right; }
+.chat-line.them .chat-bubble { background:#ebf5fb; text-align:left; }
+#contentModal { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:#fff; padding:20px; border-radius:10px; max-width:80%; max-height:80%; overflow:auto; box-shadow:0 4px 12px rgba(0,0,0,0.25); }
+#contentModal h3 { margin-top:0; }
+footer { display:flex; justify-content:space-around; padding:8px 0; background:#ededed; border-top:1px solid #dcdcdc; }
+.nav-btn.active { background:#cccccc; font-weight:600; }
+</style>
+</head>
+<body>
+<header>
+  <button id="backBtn" onclick="location.href='VX_00.html'">← 返回</button>
+  <h1>搜索</h1>
+</header>
+<main>
+  <div id="searchBar">
+    <input type="text" id="searchBox" placeholder="输入关键词搜索">
+    <button id="searchBtn">搜索</button>
+  </div>
+  <div id="searchResult" class="result-list"></div>
+</main>
+<footer>
+  <a class="nav-btn" id="nav-msg" href="VX_00.html">消息</a>
+  <a class="nav-btn" id="nav-contacts" href="#">通讯录</a>
+  <a class="nav-btn active" id="nav-moments" href="#">生活圈</a>
+  <a class="nav-btn" id="nav-me" href="#">我</a>
+</footer>
+
+<div id="contentModal">
+  <h3 id="contentTitle"></h3>
+  <div id="contentBody"></div>
+  <button onclick="document.getElementById('contentModal').style.display='none'">关闭</button>
+</div>
+
+<script>
+let currentUser = localStorage.getItem("currentUser");
+
+const usersContent = {
+  "xixi2333": {
+    "海上生明月": { title:"旅游好去处推荐", type:"公众号", content:`海上升明月,天涯共此时。假期好去处推荐，小编首推<b>盼月海</b>，海天一色，浪花涛涛...` },
+    "谷子": { type:"备忘录", content:"购买谷子，偷偷准备了小盼最想要的周边，给她一个惊喜o(*￣▽￣*)ブ" },
+    "盼月海": [
+      { title:"盼月海景区", type:"公众号", content:"假期好去处，海天一色。每周一晚还有壮观的海上烟花秀，敬请期待！" },
+      { title:"盼月海简介", type:"千度", content:`千度百科：盼月海,<b>往南市</b>十大风景名胜之一，位于人杰地灵的盼郦区，于七年前重新开放。由于景区面积庞大，近期规划增加<b>安保</b>人数......` }
+    ],
+    "生日":[{title:"去年生日",type:"备忘录",content:"和小盼认识的时候刚好要到她的生日了，亲手做了手链寄给了她o(*￣▽￣*)ブ"},
+      {title:"今年生日",type:"聊天",content:`（聊天记录）<br>嘻嘻:宝贝~你生日快到啦，想要什么生日礼物呀？<br>小盼宝宝：那，可以把你一直戴着的那条手链送给我吗<br>嘻嘻:欸？可是我戴很久了都旧了，<b>而且和去年送你的那根一样</b>，我给你再编一根和去年不同的吧(・∀・<br>小盼宝宝：不用，我想要你一直戴着的那根，我觉得更有意义`}
+    ],
+    "安保":{title:"盼月海景区游客失踪",type:"公众号",content:`盼月海景区内常年发生游客失踪案，警方严肃提醒游客们务必注意人身安全。据周围居民传言，这也许十年前的<b>海边溺亡案有关</b>...当然，这都只是传闻，近来有关部门也增加了安保措施，大家出行注意安全就好。`},
+    "海边溺亡案":{title:"海边溺亡案",type:"新闻",content:"psmwhnmwyrtmfcdj"},
+    "往南市":{title:"多子之地",type:"公众号",content:`往南市盼郦区，自xx朝代民间盛传的多子之地，常诞<b>双生子</b>。因其盛名远扬，人们在此地建有一<b>庙</b>，年年有无数外地游客慕名而来。十二年前因事故曾短暂封锁，后再度开放。`},
+    "双生子":{title:"关于弟弟",type:"聊天",content:`（聊天记录）<br>小盼宝宝：这次又没法和你凑满赠了小希。
+    <br>嘻嘻:没关系的，不过宝宝你不是很喜欢这期谷子吗(・∀・
+    <br>小盼宝宝：嗯...我弟弟他要上<b>补习班</b>，家里条件不好，我得帮忙分担一些，所以...
+    <br>嘻嘻：这样呀......`},
+    "补习班":[{title:"究竟是谁发明的补习班",type:"公众号",content:`（评论区）
+    <br>（11月7日）你相信光吗：究竟是谁发明的补习班啊啊啊啊啊。<br>我妈又给我报名了一个奥数的，这已经是我第三个补习班了。我姐姐明天生日，但我一放学就是补习班，一结束补习就回家早睡早起，根本没来得及给她买生日<b>礼物</b>。`},
+  {title:"补习班推荐",type:"公众号",content:`（评论区）
+  <br>幸福平安：请问第一个奥数补习班的老师联系方式有吗？
+  <br>补习班大全：有任何疑问都可以在评论区问小编哟~`}],
+  "礼物":[{title:"女生收到这些生日礼物都哭了！",type:"公众号",content:`（评论区）你相信光吗：我姐姐好像很喜欢某个游戏的角色，我送她相关的周边可以吗？不过她有时候又突然很不在乎那些东西，连我妈妈说要把她的谷子全丢了也没有反应...哎呀好烦呐！`},
+    {title:"快递已寄出",type:"聊天",content:`（通知弹窗）
+    <br>官谷店：亲，您购买的xx二期周边已寄出，具体<b>物流信息</b>见小窗~`}
+  ],
+  "世隐庙":[]
+    }
+  ,
+  "PAN1108": {
+    "妈妈":{type:"备忘录",content:`√每月记得给妈妈<b>转账500元</b>。`},
+    "特产": { type:"备忘录", content:`如果来得及，给小希寄一份<b>特别的礼物</b>。` },
+    "生日": [{ type:"公众号", content:"生日祝福精选公众号文章..." },
+      {type:"备忘录",content:`等到周一，我就可以实现我的<b>愿望</b>。<br>姐姐，你很快<span style="color:darkred;">就不会孤单</span>了。`}],
+    "旅游": { type:"千度", content:"千度科普：旅游景点介绍..." }
+  }
+};
+
+function showContent(item) {
+  document.getElementById("contentTitle").textContent = item.title || item.type;
+  document.getElementById("contentBody").innerHTML = item.content;
+  document.getElementById("contentModal").style.display = "block";
+}
+
+document.getElementById("searchBtn").onclick = () => {
+  const keyword = document.getElementById("searchBox").value.trim();
+  const box = document.getElementById("searchResult");
+  box.innerHTML = "";
+
+  if (!currentUser) return alert("请先登录！");
+
+  const userData = usersContent[currentUser];
+
+  for (let key in userData) {
+    if (key.includes(keyword)) {
+      let results = Array.isArray(userData[key]) ? userData[key] : [userData[key]];
+      results.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "result-card";
+        if (item.type === "备忘录" || item.type === "公众号" || item.type === "新闻" || item.type === "千度"||item.type === "公众号") {
+          card.innerHTML = `<b>${item.title || key}</b>（${item.type}）<br><small>点击查看详细内容</small>`;
+          card.onclick = () => showContent(item);
+        } else if (item.type === "聊天") {
+          card.innerHTML = `<div class='chat-line them'><div class='chat-bubble'><b>${item.title || key}</b>${item.content}</div></div>`;
+        }
+        box.appendChild(card);
+      });
+    }
+  }
+  if (box.innerHTML === "") box.innerHTML = "<p>未搜索到相关内容</p>";
+};
+
+// 底部导航跳转
+document.getElementById('nav-contacts').onclick = e=>{e.preventDefault();location.href='FriendList.html'};
+document.getElementById('nav-moments').onclick = e=>{e.preventDefault();location.href='Moments.html'};
+document.getElementById('nav-me').onclick = e=>{e.preventDefault();location.href='Me.html'};
+</script>
+</body>
+</html>

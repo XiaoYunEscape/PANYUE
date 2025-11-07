@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="stylesheet" href="nav.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>我</title>
+<style>
+body {
+    margin:0;
+    font-family:"Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;
+    background:#f5f5f5;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    color:#333;
+}
+
+#backBtn {
+    background:none;
+    border:none;
+    cursor:pointer;
+    color:#333;
+}
+
+main {
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:16px;
+    overflow:auto;
+}
+
+.hint {
+    background:#fff;
+    padding:20px;
+    border-radius:8px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.06);
+    max-width:300px;
+    width:90%;
+    text-align:center;
+}
+
+.hint input {
+    padding:10px;
+    font-size:14px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    width:95%;
+}
+
+.hint button {
+    padding:10px 14px;
+    border:none;
+    border-radius:6px;
+    background:#07c160;
+    color:#fff;
+    font-size:14px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.hint button:hover {
+    background:#06b157;
+}
+
+.nav-btn.active {
+    background:#cccccc;
+    font-weight:600;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <button id="backBtn" onclick="location.href='VX_00.html'">← 返回</button>
+  <h1>我</h1>
+</header>
+
+<main id="main"></main>
+
+<footer>
+    <a class="nav-btn" id="nav-msg" href="VX_00.html">消息</a>
+    <a class="nav-btn" id="nav-contacts" href="#">通讯录</a>
+    <a class="nav-btn" id="nav-moments" href="#">生活圈</a>
+    <a class="nav-btn active" id="nav-me" href="#">我</a>
+</footer>
+
+<script>
+(function(){
+  const main = document.getElementById('main');
+  let currentUser = localStorage.getItem("currentUser") || "";
+
+  function renderMePage(){
+    main.innerHTML = '';
+    const container = document.createElement('div');
+    container.className = 'hint';
+
+    if(currentUser){
+      // 登录状态：显示退出按钮
+      container.innerHTML = `
+        <p id="usernameDisplay">当前用户：${currentUser}</p>
+        <button id="logoutBtn">退出登录</button>
+      `;
+      main.appendChild(container);
+      document.getElementById("logoutBtn").onclick = ()=>{
+        localStorage.removeItem("currentUser");
+        currentUser = "";
+        alert("已退出登录");
+        renderMePage();
+      };
+    } else {
+      // 未登录状态：显示登录表单
+      container.innerHTML = `
+        <h3 style="margin-bottom:16px;">登录</h3>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <input type="text" id="usernameInput" placeholder="请输入账号，如 xixi2333">
+          <input type="password" id="passwordInput" placeholder="请输入密码">
+          <button id="loginBtn">登录</button>
+        </div>
+      `;
+      main.appendChild(container);
+      document.getElementById("loginBtn").onclick = ()=>{
+        const name = document.getElementById("usernameInput").value.trim();
+        const pwd = document.getElementById("passwordInput").value.trim();
+        if((name == "PAN1108" && pwd === "xiaoxi") || (name == "xixi2333" && pwd === "kaixin")){
+          currentUser = name;
+          localStorage.setItem("currentUser", currentUser);
+          alert("登录成功：" + currentUser);
+          renderMePage();
+        } else {
+          alert("请输入完整的账号与密码！");
+        }
+      };
+    }
+  }
+
+  renderMePage();
+
+  // 底部导航跳转
+  
+  document.getElementById('nav-contacts').onclick = e=>{e.preventDefault();location.href='FriendList.html'};
+  document.getElementById('nav-moments').onclick = e=>{e.preventDefault();location.href='Moments.html'};
+})();
+</script>
+
+</body>
+</html>

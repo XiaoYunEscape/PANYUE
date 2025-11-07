@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VX</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background-color: #ededed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-header {
+      background-color: #d1d1d1;
+      padding: 12px;
+      text-align: center;
+      font-weight: bold;
+      color: #333;
+      border-bottom: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .chat-body {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      scroll-behavior: smooth;
+    }
+    .chat-time {
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+      background-color: rgba(200, 200, 200, 0.3);
+      padding: 4px 10px;
+      border-radius: 10px;
+      display: inline-block;
+      margin: 10px auto;
+    }
+    .message { display: flex; margin-bottom: 10px; }
+    .message .bubble {
+      max-width: 70%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 15px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+    .message.other { align-items: flex-start; }
+    .message.other .bubble { background-color: #fff; color: #000; margin-left: 10px; border-top-left-radius: 0; }
+    .message.self { flex-direction: row-reverse; align-items: flex-start; }
+    .message.self .bubble { background-color: #95ec69; color: #000; margin-right: 10px; border-top-right-radius: 0; }
+
+    /* 公众号图文卡片 */
+    .share-card {
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #ddd;
+      width:25%;
+      height:25 ;
+      margin: 5px 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.1s ease;
+      text-decoration: none;
+      display: block;
+    }
+    .share-card:hover { transform: scale(1.01); }
+    .share-content { padding: 10px; }
+    .share-content h4 { font-size: 15px; margin-bottom: 5px; color: #333; }
+    .share-content p { font-size: 13px; color: #666; }
+
+    .loading { text-align: center; color: #888; font-size: 13px; margin: 10px auto; display: none; }
+    .history-tip {
+      text-align: center; color: #666; font-size: 13px;
+      background-color: rgba(180, 180, 180, 0.4);
+      padding: 6px 12px; border-radius: 12px; width: fit-content;
+      margin: 10px auto; cursor: pointer; display: none;
+    }
+    .letter {
+      font-family: "SimSun", serif;
+      background-color: blanchedalmond;
+      color: rgb(118, 67, 1);
+      border: 5px outset #deb887;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      padding: 30px 40px;
+      width: 60%; max-width: 600px; line-height: 1.8;
+    }
+
+    a.cx-link {
+      color: rgb(148, 59, 0);
+      text-decoration: underline;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    a.cx-link:hover {
+      color: rgb(216, 91, 0);
+    }
+    @media (max-width: 600px) {
+      .chat-header { font-size: 14px; }
+      .message .bubble { font-size: 14px; }
+      .share-card { width: 70%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-header">小盼宝宝</div>
+  <div class="chat-body" id="chatBody">
+    <div class="loading" id="loading">加载中...</div>
+    <div class="history-tip" id="historyTip">点击查看历史聊天记录</div>
+
+    <div class="chat-time">周三 19:30</div>
+    <div class="message self"><div class="bubble">宝宝满赠我给你寄出啦</div></div>
+    <div class="message other"><div class="bubble">谢谢小希呀。</div></div>
+    <div class="chat-time">周五 13:30</div>
+    <div class="message other"><div class="bubble">那就约好了，周一见</div></div>
+    <div class="message self"><div class="bubble">嗯嗯，好期待好期待，我给你带新出的谷子！</div></div>
+    <div class="message other"><div class="bubble">好呀，那我给你带那里的特产回来</div></div>
+    <div class="message self"><div class="bubble">好，玩得开心！</div></div>
+    <div class="message self"><div class="bubble">(づ￣ 3￣)づ</div></div>
+  </div>
+
+  <script>
+    const chatBody = document.getElementById("chatBody");
+    const historyTip = document.getElementById("historyTip");
+    const loading = document.getElementById("loading");
+    let clickCount = 0;
+
+    document.body.addEventListener("click", () => {
+      clickCount++;
+      if (clickCount === 2) historyTip.style.display = "block";
+    });
+
+    historyTip.addEventListener("click", () => {
+      historyTip.style.display = "none";
+      loading.style.display = "block";
+
+      setTimeout(() => {
+        loading.style.display = "none";
+
+        // 历史消息
+        const messages = [];
+
+        messages.push({type:"time", text:"11/02 21:03"});
+        messages.push({type:"share", title:"新推送：海上生明月，天涯共此时🌙", content:"推荐一处假期好去处。"});
+        messages.push({type:"other", text:"我觉得这个地方看起来挺不错的。"});
+        messages.push({type:"self", text:"去玩去玩去玩gogogo，下周六不刚好是你生日吗！"});
+        messages.push({type:"self", text:"而且很巧欸，你的名字也在这片海的名字里(o゜▽゜)o☆"});
+        messages.push({type:"time", text:"11/03 22:15"});
+        messages.push({type:"other", text:"太帅了新pv，我要狠狠抽卡！"});
+        messages.push({type:"self", text:"我懂你！！！简直是神来的"});
+        messages.push({type:"other", text:"不过我这周开始得省点钱，只能靠肝活来攒资源抽我推了。"});
+        messages.push({type:"self", text:"啊？宝宝最近急着用钱吗？"});
+        messages.push({type:"other", text:"我打算周末去之前我和你说的那个地方，你也知道景点消费挺那啥。"});
+        messages.push({type:"self", text:"哈哈哈那确实，没事你肝不动了找我我帮你肝(●ˇ∀ˇ●)"});
+
+        messages.reverse().forEach(msg => {
+          let el;
+          if(msg.type==="time"){
+            el = document.createElement("div");
+            el.className = "chat-time";
+            el.textContent = msg.text;
+          } else if(msg.type==="share"){
+            const wrapper = document.createElement("div");
+            wrapper.className = "message other";
+            wrapper.style.flexDirection = "column";
+            const card = document.createElement("div");
+            card.className = "share-card";
+            card.innerHTML = `<div class="share-content"><h4>${msg.title}</h4><p>${msg.content}</p></div>`;
+            card.addEventListener("click", () => {
+              const letter = document.createElement("div");
+              letter.className = "letter";
+              letter.innerHTML = `<h2>日记02</h2><p>链接过期打不开了，可恶<br>但我还记得当时看过一眼那个景点的名字，什么月什么来着？<br>或许我可以在<a href="VX_00.html">VX</a>里搜搜看</p>`;
+              letter.style.cssText += "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 999; cursor: pointer;";
+              document.body.appendChild(letter);
+            });
+            wrapper.appendChild(card);
+            el = wrapper;
+          } else {
+            el = document.createElement("div");
+            el.className = `message ${msg.type}`;
+            el.innerHTML = `<div class="bubble">${msg.text}</div>`;
+          }
+          chatBody.prepend(el);
+        });
+
+        chatBody.scrollTop = 0;
+      }, 800);
+    });
+  </script>
+</body>
+</html>

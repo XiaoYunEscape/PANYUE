@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <link rel="stylesheet" href="nav.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VX</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  #searchIcon {
+    position: absolute;
+    right:5%;
+    background: none;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    color: #333;
+  }
+
+  main {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    color: #333;
+  }
+
+  #loginModal {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    z-index: 1000;
+    text-align: center;
+    width: 80%;
+    max-width: 350px;
+  }
+
+  #loginModal h3 { margin-top:0;color:#333; }
+  #loginModal input { display:block;width:100%;margin-bottom:12px;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:14px; }
+  #loginModal button { padding: 8px 12px; border:none; border-radius:6px; background-color:#07c160; color:#fff; font-size:14px; cursor:pointer; margin-top:8px; }
+  #loginModal button:hover { background-color:#06b157; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>VX</h1>
+  <button id="searchIcon">搜索</button>
+</header>
+
+<main id="mainContent">
+  <p id="welcomeText">
+    欢迎，请自由探索，搜索或和列表交流关键词，从得到的回答提取信息，找寻小盼失联的原因。
+    <br>到后期也许你还需要添加某些人或者更换账号来进一步找寻真相。
+    <br>啊，也许你需要“我”的账号密码
+    <br>xixi2333  kaixin
+    <br>登录后请在消息页搜索一下小盼分享的公众号标题吧（其中一句）
+    <br>
+    <br>tips:注意非已知好友的账号，也许有需要添加的人呢~
+    <br>和好友的聊天主要是剧情的补充，请在聊天和搜索中多多尝试不同关键词（不同区域的关键词可能重复）~
+  </p>
+</main>
+
+<footer>
+  <a href="VX_00.html" class="nav-btn" id="msgBtn">消息</a>
+  <a href="FriendList.html" class="nav-btn" id="contactBtn">通讯录</a>
+  <a href="Moments.html" class="nav-btn" id="momentsBtn">生活圈</a>
+  <a href="Me.html" class="nav-btn" id="meBtn">我</a>
+</footer>
+
+<!-- <div id="loginModal">
+  <h3>登录</h3>
+  <input type="text" id="username" placeholder="请输入账号，如 xixi2333 或 PAN1108">
+  <input type="password" id="password" placeholder="请输入密码">
+  <button id="loginConfirm">登录</button>
+  <button onclick="document.getElementById('loginModal').style.display='none'">关闭</button>
+</div> -->
+
+<script>
+    let currentUser = localStorage.getItem("currentUser") || "";
+    
+    const meBtn = document.getElementById("meBtn");
+    const loginModal = document.getElementById("loginModal");
+    const welcomeText = document.getElementById("welcomeText");
+  
+    meBtn.onclick = () => {
+      // 直接进入“我”页面
+      location.href = "Me.html";
+    };
+  
+const searchBtn = document.getElementById("searchIcon");
+
+searchBtn.onclick = () => {
+  if (!currentUser) {
+    alert("请先登录！");
+  } else {
+    location.href = "Search.html"; // 登录后跳转到搜索页
+  }
+};
+    
+  
+    function navigateCheckLogin(target) {
+      if (!currentUser) {
+        alert("请先登录！");
+      } else {
+        location.href = target;
+      }
+    }
+    
+   
+    document.getElementById("contactBtn").onclick = () => navigateCheckLogin("FriendList.html");
+    document.getElementById("momentsBtn").onclick = () => navigateCheckLogin("Moments.html");
+  </script>
+  
+</script>
+
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>聊天</title>
+<style>
+body{font-family:"Microsoft YaHei",sans-serif;background:#ededed;display:flex;flex-direction:column;height:100vh;margin:0;}
+.chat-header{background:#d1d1d1;padding:12px;text-align:center;font-weight:bold;color:#333;position:relative;}
+#backBtn{position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:16px;cursor:pointer;}
+.chat-body{flex:1;padding:15px;overflow-y:auto;display:flex;flex-direction:column;scroll-behavior:smooth;}
+.chat-time{text-align:center;color:#666;font-size:12px;background:rgba(200,200,200,0.3);padding:4px 10px;border-radius:10px;display:inline-block;margin:10px auto;}
+.message{display:flex;margin-bottom:10px;}
+.message.other{align-items:flex-start;}
+.message.other .bubble{background:#fff;margin-left:10px;border-radius:8px 8px 8px 0;padding:10px 14px;max-width:70%;}
+.message.self{flex-direction:row-reverse;align-items:flex-start;}
+.message.self .bubble{background:#95ec69;margin-right:10px;border-radius:8px 8px 0 8px;padding:10px 14px;max-width:70%;}
+.chat-input-container{display:flex;padding:10px;background:#f5f5f5;border-top:1px solid #ccc;}
+#chatInput{flex:1;padding:10px;border-radius:6px;border:1px solid #ccc;margin-right:6px;}
+#sendBtn{padding:10px 14px;border:none;border-radius:6px;background:#07c160;color:#fff;cursor:pointer;}
+#sendBtn:hover{background:#06b157;}
+</style>
+</head>
+<body>
+
+<div class="chat-header">
+  <button id="backBtn">← 返回</button>
+  <span id="chatHeader">好友</span>
+</div>
+
+<div class="chat-body" id="chatBody">
+  <div class="chat-time">历史记录</div>
+</div>
+
+<div class="chat-input-container">
+  <input type="text" id="chatInput" placeholder="输入消息...">
+  <button id="sendBtn">发送</button>
+</div>
+
+<script>
+  function getQueryParam(name){ return new URLSearchParams(window.location.search).get(name); }
+  
+  let currentUser = decodeURIComponent(getQueryParam("user") || localStorage.getItem("currentUser") || "嘻嘻");
+  let currentChat = decodeURIComponent(getQueryParam("friend") || "小盼宝宝");
+  document.getElementById("chatHeader").textContent=currentChat;
+  
+  // 每个用户的聊天记录
+  const chatRecords = {
+    "xixi2333": {
+      "小盼宝宝": [
+        "xixi2333: 宝宝，你新拍的照片好好看！",
+        "PAN1108: 谢谢呀，用新服装拍的。",
+        "xixi2333: 求模板，我也要拍！"
+      ],
+      "官谷店": [
+        "官谷店: 宝贝您好呀，有什么可以帮您~",
+        "xixi2333: 【催发货】",
+        "官谷店: 宝贝您好呀，有什么可以帮您~",
+        "xixi2333: 【催发货!】"
+      ],
+      "小云": [
+        "xixi2333: 小云，别担心啦~",
+        "小云: 呜呜呜，下辈子我一定好好学前端",
+        "小云: 可是AI太好用了qwq"
+      ]
+    },
+    "PAN1108": {
+      "小希": [
+        "xixi2333: 宝宝宝宝，这次新谷一起凑满赠嘛？",
+        "PAN1108: 好呀，我把要买的发给你。 "
+      ],
+      "妈妈": [
+        "幸福平安: 你弟弟也要开学了，你的生活费减半哈",
+        "PAN1108: 知道了。"
+      ],
+      "弟弟": [
+        "你相信光吗: 姐，生日快乐！",
+        "PAN1108: 谢谢。"
+      ]
+    }
+  };
+  
+  const chatBody=document.getElementById("chatBody");
+  const chatInput=document.getElementById("chatInput");
+  const sendBtn=document.getElementById("sendBtn");
+  
+  // 渲染消息（支持 HTML）
+  function addMessage(text,self=false){
+    const msgDiv=document.createElement("div");
+    msgDiv.className=self?"message self":"message other";
+    const bubble=document.createElement("div");
+    bubble.className="bubble";
+    bubble.innerHTML=text; //使用 innerHTML 以支持富文本
+    msgDiv.appendChild(bubble);
+    chatBody.appendChild(msgDiv);
+    chatBody.scrollTop=chatBody.scrollHeight;
+  }
+  
+  // 自动回复（支持多轮对话 + innerHTML）
+  const keywordResponses = {
+    "小盼宝宝": { 
+      "拨打电话10131108":[
+        {sender:"小盼宝宝", text:"（解锁结局1 <a href='#' style='color:red;'>梦醒</a>）"},
+        {sender:"xixi2333", text:"什么意思呀？"},
+        {sender:"小盼宝宝", text:"<b>嘻嘻，你醒啦。</b>"}
+      ]
+    },
+    "官谷店":{
+      "物流信息":[
+        {sender:"官谷店", text:"亲您好，已为您查询到订单 YX1475829634：从管故市发往北岸市，收件人为小盼宝宝。"},
+        {sender:"嘻嘻", text:"谢谢客服小姐姐～"}
+      ]
+    },
+    "你相信光吗":{
+      "姐姐":[
+        {sender:"你相信光吗", text:"你是我姐的朋友？"},
+        {sender:"xixi2333", text:"嗯嗯，我叫小希，是她的网友"},
+        {sender:"你相信光吗", text:"啊我知道你。我姐最近状态很不好，也不知道她在忙什么"},
+        {sender:"你相信光吗",text:"和她聊天总是有一搭没一搭的。"}
+      ],
+      "庙":[
+        {sender:"xixi2333",text:"你姐去往盼月海那边了。"},
+        {sender:"你相信光吗",text:"那不是我家周围吗，她怎么不来找我？"},
+        {sender:"xixi2333",text:"你们周围？那附近是不是有个什么庙？"},
+        {sender:"你相信光吗",text:"是哦，我们这边有个世隐庙"},
+        {sender:"你相信光吗",text:"可有名了，每天都有好多好多人去那儿"}
+      ],
+      "补习班":[
+      {sender:"xixi2333",text:"看帖子说你又有补习班要去？"},
+      {sender:"你相信光吗",text:"是啊，爸妈逼我去的，还是姐姐自由啊，成年了就可以想做什么就做什么"},
+      {sender:"xixi2333",text:"呃其实也并不是...算了"}
+      ],
+      "盼月海":[
+      {sender:"xixi2333",text:"你听说过盼月海吗？"},
+      {sender:"你相信光吗",text:"当然，就在我们盼郦市啊。我姐还说我生日那天要带我逃课去那里呢，我都不敢和我妈妈说。"},
+      {sender:"你相信光吗",text:"只是她现在还没联系我，也不知道还做不做数。"},
+      {sender:"xixi2333",text:"......"},
+      ],
+      "礼物":[
+      {sender:"xixi2333",text:"那既然你上补习班没有时间，最后你送给小盼什么生日礼物？"},
+      {sender:"你相信光吗",text:"嘿嘿，我把从小带在身边的奥X曼给她啦。"},
+      {sender:"xixi2333",text:"呃，她会喜欢？"},
+      {sender:"你相信光吗",text:"当然！小时候她想要爸妈都没给她买呢！我给的这个还是我第一次考满分时，爸爸给我选的礼物"}
+      ]
+
+    },
+    "妈妈": { 
+      "转账500元": [
+        {sender:"幸福平安", text:"收到了，下个月你弟弟培训班开课，你看能不能多转点，帮家里分担分担。"},
+        {sender:"嘻嘻", text:"知道啦妈～"},
+        {sender:"幸福平安", text:"<span style='color:red;'>别一天到晚玩你那破游戏。</span>"}
+      ]
+    }
+  };
+  
+  // 渲染历史记录
+  if(chatRecords[currentUser] && chatRecords[currentUser][currentChat]){
+    chatRecords[currentUser][currentChat].forEach(msg=>{
+      const self=msg.startsWith(currentUser+":");
+      addMessage(msg,self);
+    });
+  }
+  
+  // 返回按钮
+  document.getElementById("backBtn").onclick=()=>{ location.href="FriendList.html"; }
+  
+  // 发送消息逻辑
+  sendBtn.onclick=()=>{
+    const text=chatInput.value.trim();
+    if(!text) return;
+    const msg=currentUser+": "+text;
+    // addMessage(msg,true);
+  
+    if(!chatRecords[currentUser]) chatRecords[currentUser]={};
+    if(!chatRecords[currentUser][currentChat]) chatRecords[currentUser][currentChat]=[];
+    chatRecords[currentUser][currentChat].push(msg);
+  
+    chatInput.value="";
+  
+    // 检查关键词触发
+    const responses=keywordResponses[currentChat];
+    if(responses){
+      for(let key in responses){
+        if(text.includes(key)){
+          const dialogue=responses[key];
+          let i=0;
+          const interval=setInterval(()=>{
+            const d=dialogue[i];
+            const fullMsg=d.text;
+            const self=(d.sender===currentUser);
+            addMessage(fullMsg,self);
+            chatRecords[currentUser][currentChat].push(fullMsg);
+            i++;
+            if(i>=dialogue.length) clearInterval(interval);
+          },900);
+          return;
+        }
+      }
+    }
+  
+    // 默认自动回复
+    setTimeout(()=>{
+      const autoMsg=currentChat+": ？";
+      addMessage(autoMsg);
+      chatRecords[currentUser][currentChat].push(autoMsg);
+    },800);
+  };
+  
+  // 回车发送
+  chatInput.addEventListener("keypress",e=>{if(e.key==="Enter") sendBtn.click();});
+  </script>
+  
+
+</body>
+</html>
