@@ -95,7 +95,15 @@ body{font-family:"Microsoft YaHei",sans-serif;background:#ededed;display:flex;fl
     chatBody.appendChild(msgDiv);
     chatBody.scrollTop=chatBody.scrollHeight;
   }
-  
+
+  function addTimeMessage(timeText){
+  const timeDiv = document.createElement("div");
+  timeDiv.className = "chat-time";
+  timeDiv.textContent = timeText;
+  chatBody.appendChild(timeDiv);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
   // 自动回复（支持多轮对话 + innerHTML）
   const keywordResponses = {
     "小盼宝宝": { 
@@ -108,7 +116,7 @@ body{font-family:"Microsoft YaHei",sans-serif;background:#ededed;display:flex;fl
     "官谷店":{
       "物流信息":[
         {sender:"官谷店", text:"亲您好，已为您查询到订单 YX1475829634：从管故市发往北岸市，收件人为小盼宝宝。"},
-        {sender:"嘻嘻", text:"谢谢客服小姐姐～"}
+        {sender:"xixi2333", text:"谢谢客服小姐姐～"}
       ]
     },
     "你相信光吗":{
@@ -144,6 +152,44 @@ body{font-family:"Microsoft YaHei",sans-serif;background:#ededed;display:flex;fl
       ]
 
     },
+    // {sender:"",text:""},
+    "幸福平安":{
+      "女儿":[
+        {sender:"xixi2333",text:"阿姨好，我是你女儿的朋友"},
+        {sender:"幸福平安",text:"什么女儿，我告诉你我没有钱，要撕票就撕。"},
+        {sender:"xixi2333",text:"...不是的阿姨，我叫小希，我..."},
+        {sender:"幸福平安",text:`小希？哦，想起来了，她<b>游戏</b>上的朋友是吧，你找我有事,还是小盼？`}
+      ],
+      "游戏":[
+      {sender:"xixi2333",text:"阿姨，我和小盼在游戏上认识后约着线下见面的，可是"},
+      {sender:"幸福平安",text:"线下见面？她一天玩那个游戏认识些什么不三不四的人，还敢约出去见面？"},
+      {sender:"幸福平安",text:"还一天拿钱买什么谷子，不就是堆铁皮玩意儿，为了网上那些假东西浪费钱！她以前可不是这样的，都是你们这群人把她带坏了！"},
+      {sender:"xixi2333",text:"...🙂"}
+      ],
+      "谷子":[
+      {sender:"xixi2333",text:"那她留在家里的谷子呢？"},
+      {sender:"幸福平安",text:"准备扔了，不过你要是想要那堆东西，我可以便宜卖给你。"},
+      {sender:"xixi2333",text:"...走渠道吧。"},
+      {type:"time",text:"你收到一份从往南市盼郦区寄来的快递，里面是一个保护得当的盒子。上面写着：“盼悦”二字。"}
+      ],
+      "世隐庙":[
+      {sender:"xixi2333",text:"阿姨，关于世隐庙您有什么了解吗？"},
+      {sender:"幸福平安",text:"那座庙？我们这儿最有名的景点之一吧。"},
+      {sender:"幸福平安",text:"怎么，你要来求子？你不是和小盼差不多年纪吗？"},
+      {sender:"xixi2333",text:"不是不是...是小盼之前提起过那个地方。"},
+      {sender:"幸福平安",text:"哦，那地方挺灵的，就是有点太灵了，我都是在拜过那里后怀上孩子的"},
+      {sender:"幸福平安",text:`也不知道是好事还是坏事...好像就是这几天，要到俩孩子<b>生日</b>了？`}
+      ],
+      "生日":[
+      {sender:"xixi2333",text:"小盼生日已经过了，这周六。"},
+      {sender:"幸福平安",text:"啊对，我都忘了。她还准我寄点家里的东西过去。这个没良心的，自从从家里搬出去后，就不怎么和我们联系了，连快递也很少收。"},
+      {sender:"幸福平安",text:"说起来我家安安也要过生日了，姐弟俩不是还约着要去海边玩嘛。"},
+      {sender:"xixi2333",text:"欸？阿姨你怎么知道，她弟弟不是说..."},
+      {sender:"幸福平安",text:"嘁，你以为你们这些小孩在我面前能有啥秘密？"},
+      {sender:"幸福平安",text:"安安和他姐习惯一样，都喜欢用重要的人名作密码。我一试一个准，不过居然不是我的名字。"},
+      {sender:"xixi2333",text:"😅"}
+      ]
+    },
     "妈妈": { 
       "转账500元": [
         {sender:"幸福平安", text:"收到了，下个月你弟弟培训班开课，你看能不能多转点，帮家里分担分担。"},
@@ -153,13 +199,20 @@ body{font-family:"Microsoft YaHei",sans-serif;background:#ededed;display:flex;fl
     }
   };
   
-  // 渲染历史记录
-  if(chatRecords[currentUser] && chatRecords[currentUser][currentChat]){
-    chatRecords[currentUser][currentChat].forEach(msg=>{
-      const self=msg.startsWith(currentUser+":");
-      addMessage(msg,self);
-    });
-  }
+  // 渲染历史记录（去掉发送者名字）
+if (chatRecords[currentUser] && chatRecords[currentUser][currentChat]) {
+  chatRecords[currentUser][currentChat].forEach(msg => {
+    // 检查是否带“:”，如果有，就切掉名字部分
+    const parts = msg.split(":");
+    const text = parts.length > 1 ? parts.slice(1).join(":").trim() : msg;
+
+    // 判断是不是自己发的（保留气泡方向）
+    const self = msg.startsWith(currentUser + ":");
+
+    addMessage(text, self);
+  });
+}
+
   
   // 返回按钮
   document.getElementById("backBtn").onclick=()=>{ location.href="FriendList.html"; }
@@ -182,17 +235,30 @@ body{font-family:"Microsoft YaHei",sans-serif;background:#ededed;display:flex;fl
     if(responses){
       for(let key in responses){
         if(text.includes(key)){
-          const dialogue=responses[key];
-          let i=0;
-          const interval=setInterval(()=>{
-            const d=dialogue[i];
-            const fullMsg=d.text;
-            const self=(d.sender===currentUser);
-            addMessage(fullMsg,self);
-            chatRecords[currentUser][currentChat].push(fullMsg);
-            i++;
-            if(i>=dialogue.length) clearInterval(interval);
-          },900);
+          const dialogue = responses[key];
+let i = 0;
+const interval = setInterval(() => {
+  const d = dialogue[i];
+
+  if (d.type === "time") {
+    // 插入时间提示样式
+    const timeDiv = document.createElement("div");
+    timeDiv.className = "chat-time";
+    timeDiv.textContent = d.text;
+    chatBody.appendChild(timeDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  } else {
+    // 普通消息
+    const fullMsg = d.text;
+    const self = (d.sender === currentUser);
+    addMessage(fullMsg, self);
+    chatRecords[currentUser][currentChat].push(fullMsg);
+  }
+
+  i++;
+  if (i >= dialogue.length) clearInterval(interval);
+}, 900);
+
           return;
         }
       }
@@ -200,7 +266,7 @@ body{font-family:"Microsoft YaHei",sans-serif;background:#ededed;display:flex;fl
   
     // 默认自动回复
     setTimeout(()=>{
-      const autoMsg=currentChat+": ？";
+      const autoMsg=" ？";
       addMessage(autoMsg);
       chatRecords[currentUser][currentChat].push(autoMsg);
     },800);

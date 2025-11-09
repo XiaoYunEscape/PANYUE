@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
- <link rel="stylesheet" href="nav.css">
+  <link rel="stylesheet" href="nav.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>搜索</title>
@@ -104,6 +104,7 @@ footer { display:flex; justify-content:space-around; padding:8px 0; background:#
 let currentUser = localStorage.getItem("currentUser");
 
 const usersContent = {
+  // {title:"",type:"",content:``},
   "xixi2333": {
     "海上生明月": { title:"旅游好去处推荐", type:"公众号", content:`海上升明月,天涯共此时。假期好去处推荐，小编首推<b>盼月海</b>，海天一色，浪花涛涛...` },
     "谷子": { type:"备忘录", content:"购买谷子，偷偷准备了小盼最想要的周边，给她一个惊喜o(*￣▽￣*)ブ" },
@@ -114,7 +115,7 @@ const usersContent = {
     "生日":[{title:"去年生日",type:"备忘录",content:"和小盼认识的时候刚好要到她的生日了，亲手做了手链寄给了她o(*￣▽￣*)ブ"},
       {title:"今年生日",type:"聊天",content:`（聊天记录）<br>嘻嘻:宝贝~你生日快到啦，想要什么生日礼物呀？<br>小盼宝宝：那，可以把你一直戴着的那条手链送给我吗<br>嘻嘻:欸？可是我戴很久了都旧了，<b>而且和去年送你的那根一样</b>，我给你再编一根和去年不同的吧(・∀・<br>小盼宝宝：不用，我想要你一直戴着的那根，我觉得更有意义`}
     ],
-    "安保":{title:"盼月海景区游客失踪",type:"公众号",content:`盼月海景区内常年发生游客失踪案，警方严肃提醒游客们务必注意人身安全。据周围居民传言，这也许十年前的<b>海边溺亡案有关</b>...当然，这都只是传闻，近来有关部门也增加了安保措施，大家出行注意安全就好。`},
+    "安保":{title:"盼月海景区游客失踪",type:"公众号",content:`盼月海景区内常年发生游客失踪案，警方严肃提醒游客们务必注意人身安全。据周围居民传言，这也许七年前的<b>海边溺亡案有关</b>...当然，这都只是传闻，近来有关部门也增加了安保措施，大家出行注意安全就好。`},
     "海边溺亡案":{title:"海边溺亡案",type:"新闻",content:"psmwhnmwyrtmfcdj"},
     "往南市":{title:"多子之地",type:"公众号",content:`往南市盼郦区，自xx朝代民间盛传的多子之地，常诞<b>双生子</b>。因其盛名远扬，人们在此地建有一<b>庙</b>，年年有无数外地游客慕名而来。十二年前因事故曾短暂封锁，后再度开放。`},
     "双生子":{title:"关于弟弟",type:"聊天",content:`（聊天记录）<br>小盼宝宝：这次又没法和你凑满赠了小希。
@@ -130,7 +131,13 @@ const usersContent = {
     {title:"快递已寄出",type:"聊天",content:`（通知弹窗）
     <br>官谷店：亲，您购买的xx二期周边已寄出，具体<b>物流信息</b>见小窗~`}
   ],
-  "世隐庙":[]
+  "世隐庙":[{title:"世隐庙重新开放",type:"公众号",content:`（七年前的一则通知）通知：世隐庙整修完毕，现已重新开放，欢迎广大游客。`},
+  {title:"你收到一则物流变更提醒",type:"信息",content:`物品：文创特产包裹<br>状态：运输中<br>始发地：往南市盼郦区<br>目的地：希溪市`},
+  {title:"物流信息",type:"信息",content:`物品：食品、<b>护身符</b><br>状态：已签收<br>始发地：往南市盼郦区<br>目的地：北岸市`}
+  ],
+  "护身符":{title:"快递照片",type:"信息",content:"根据快递员发来的照片，可以看到那是一个有些破旧的护身符，看得出来用了很久。上面隐约可以看见世隐、<b>多子多福</b>等字。"},
+  "多子多福":{title:"福佑之地",type:"备忘录",content:'世隐庙福佑四方，盼郦区市民子孙连绵，整区双生子诞生率高达65%。<br>凡自世隐庙佑护得子者难以再孕，福佑之灵，纵使<b>高龄夫妇</b>也可老来得子。'},
+  "高龄产妇":{title:"多子之地再现高龄夫妇得子",type:"新闻",content:`（十二年前）于今年11月10日，我区夫妇一对高龄得子，两人此前已有<b>女儿</b>，如今儿女双全、羡煞旁人。以下为两人受访记录...... `}
     }
   ,
   "PAN1108": {
@@ -163,7 +170,7 @@ document.getElementById("searchBtn").onclick = () => {
       results.forEach(item => {
         const card = document.createElement("div");
         card.className = "result-card";
-        if (item.type === "备忘录" || item.type === "公众号" || item.type === "新闻" || item.type === "千度"||item.type === "公众号") {
+        if (item.type === "备忘录" || item.type === "公众号" || item.type === "新闻" || item.type === "千度"||item.type === "信息") {
           card.innerHTML = `<b>${item.title || key}</b>（${item.type}）<br><small>点击查看详细内容</small>`;
           card.onclick = () => showContent(item);
         } else if (item.type === "聊天") {
@@ -182,5 +189,4 @@ document.getElementById('nav-moments').onclick = e=>{e.preventDefault();location
 document.getElementById('nav-me').onclick = e=>{e.preventDefault();location.href='Me.html'};
 </script>
 </body>
-
 </html>
