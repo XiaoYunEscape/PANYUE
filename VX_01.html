@@ -92,14 +92,14 @@
       width: 60%; max-width: 600px; line-height: 1.8;
     }
 
-    a.cx-link {
+    a.vx-link {
       color: rgb(148, 59, 0);
       text-decoration: underline;
       font-weight: bold;
       transition: color 0.3s;
     }
 
-    a.cx-link:hover {
+    a.vx-link:hover {
       color: rgb(216, 91, 0);
     }
     @media (max-width: 600px) {
@@ -176,7 +176,7 @@
             card.addEventListener("click", () => {
               const letter = document.createElement("div");
               letter.className = "letter";
-              letter.innerHTML = `<h2>日记02</h2><p>链接过期打不开了，可恶<br>但我还记得当时看过一眼那个景点的名字，什么月什么来着？<br>或许我可以在<a href="VX_00.html">VX</a>里搜搜看</p>`;
+              letter.innerHTML = `<h2>日记02</h2><p>链接过期打不开了，可恶<br>但我还记得当时看过一眼那个景点的名字，什么月什么来着？<br>或许我可以在<a href="VX_00.html" class="vx-link">VX</a>里搜搜看</p>`;
               letter.style.cssText += "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 999; cursor: pointer;";
               document.body.appendChild(letter);
             });

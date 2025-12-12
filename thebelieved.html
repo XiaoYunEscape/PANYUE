@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>盼郦日报 — 海边溺亡案回顾（2006）</title>
+<style>
+  /* 重置与基础 */
+  :root{
+    --paper:#fbfbfb;
+    --ink:#111;
+    --muted:#666;
+    --accent:#b22222;
+    --line: #e6e6e6;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: "PingFang SC","Microsoft YaHei",Helvetica,Arial,sans-serif;
+    background: #f0efec;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* 报纸容器 */
+  .paper{
+    max-width:980px;
+    margin:22px auto;
+    background:var(--paper);
+    padding:22px;
+    border:1px solid var(--line);
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+  }
+
+  /* 报头 */
+  .masthead{
+    display:flex;
+    align-items:center;
+    border-bottom:4px solid #ddd;
+    padding-bottom:12px;
+    gap:16px;
+  }
+  .masthead .title{
+    font-family: "Georgia","Times New Roman",serif;
+    font-size:34px;
+    letter-spacing:2px;
+    color:#222;
+    margin:0;
+  }
+  .masthead .meta{
+    margin-left:auto;
+    text-align:right;
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  /* 报纸布局：主栏 + 侧栏 */
+  .layout{
+    display:grid;
+    grid-template-columns: 1fr 320px;
+    gap:18px;
+    margin-top:18px;
+  }
+
+  /* 主要文章样式 */
+  article.article{
+    padding:8px 6px;
+  }
+  .lede{
+    font-size:16px;
+    color:#222;
+    margin-bottom:12px;
+    line-height:1.6;
+    border-left:4px solid var(--line);
+    padding-left:12px;
+    background: linear-gradient(0deg, rgba(242,242,242,0.4), transparent);
+  }
+  .byline{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:10px;
+  }
+  .article h2{
+    margin:6px 0 12px 0;
+    font-family:"Georgia","Times New Roman",serif;
+    font-size:22px;
+    color:var(--accent);
+  }
+  .article p{ margin:10px 0; line-height:1.8; color:#222; font-size:15px; }
+
+  /* 引用与注意框 */
+  .note{
+    background:#fff7f7;
+    border-left:4px solid var(--accent);
+    padding:10px 12px;
+    margin:12px 0;
+    color:#330;
+  }
+
+  /* 侧栏 */
+  aside.side{
+    padding:8px 12px;
+    border-left:1px dashed var(--line);
+    font-size:14px;
+  }
+  .side h3{ margin:0 0 8px 0; font-size:16px; color:#333; }
+  .side .small{ color:var(--muted); font-size:13px; margin-bottom:8px; display:block;}
+  .side .fact{ background:#fff; padding:8px; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.03); margin-bottom:10px; }
+
+  /* 图片占位 */
+  .photo{
+    width:100%;
+    height:180px;
+    background:linear-gradient(135deg,#e9eef6,#fff);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--muted);
+    font-size:13px;
+    border-radius:6px;
+    margin:10px 0;
+  }
+
+  /* 手写体引用 */
+  .handwritten {
+    font-family: "Brush Script MT", "Segoe Script", "Caveat", "KaiTi", cursive !important;
+    font-size: 20px;
+    color: #a40808 !important;
+    -webkit-text-fill-color: #a40808 !important; /* iOS 必须加 */
+    text-shadow:1px 0px 2px rgb(112, 1, 1); /* 清除字体渲染阴影 */
+}
+
+
+  /* 页脚版权 */
+  .footer{
+    margin-top:18px;
+    border-top:1px solid var(--line);
+    padding-top:10px;
+    font-size:13px;
+    color:var(--muted);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+
+  /* 响应式 */
+  @media (max-width:880px){
+    .layout{ grid-template-columns: 1fr; }
+    .masthead .title{ font-size:24px; }
+    .handwritten{ font-size:18px; }
+  }
+</style>
+</head>
+<body>
+  <div class="paper" role="main" aria-label="海边溺亡案回顾—报纸样式">
+    <header class="masthead">
+      <div>
+        <h1 class="title">盼郦日报</h1>
+        <div style="font-size:12px;color:var(--muted)">地区新闻 · 特别报道</div>
+      </div>
+      <div class="meta">
+        2006年 · 回顾专刊（刊出于 2025-11-01）<br>
+        记者 / 编辑：资料整理组
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- 主文 -->
+      <article class="article" aria-labelledby="headline">
+        <p class="lede">
+          19年前（2006年）发生在盼郦区海边的一起溺亡事故造成两名幼童遇难，事件在当地留下长期创伤与未解之处。幸存者之一在成年后以化名回忆事件，但她表示对当日细节难以完整记忆，部分表现与创伤后应激反应相符。
+        </p>
+
+        <h2 id="headline">海边溺亡案回顾</h2>
+        <div class="byline">本报记者 资料整理（为保护当事人使用化名并省略可识别细节）</div>
+
+        <div class="photo">
+            <img src="sea.png" alt="2006年事发海域" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">
+          </div>          
+
+        <p>
+          2006年秋季，盼郦区某海岸线发生一起儿童溺亡事故，案件当时引发社会关注。事故中有一对双胞胎姊妹，媒体与社区长期以“小鱼 / 小月”作为识别（本文将使用“小月”（化名）指代幸存者，以避免对当事人造成二次伤害）。另一名姊妹不幸遇难。
+        </p>
+
+        <p>
+          多年后，小月在接受回忆与谈话时表示，对事故当日的许多细节无法重构：部分场景只在若干片断出现，声音、气味与时间的顺序在记忆中交错。受访心理学专家指出，这类记忆缺失与断裂常见于经历极端应激事件后，可能属于创伤后应激相关的记忆抑制或碎片化表现。
+        </p>
+
+        <div class="note">
+          <strong>声明：</strong>出于对小月隐私与心理健康的尊重，报道中使用化名并回避了可能导致识别的信息。本文不对当年警方结论做新指控，仅为回顾与资料整理，旨在呈现记忆与创伤如何长期影响幸存者与社区。
+        </div>
+
+        <p>
+          小月在青春期后参与了若干次心理咨询与回忆工作，但她本人与其家属均表示，不愿公开全貌。社区提供的回忆片段与当年公开资料并不完全一致，部分证词随着时间推移出现差异；另一方面，地方司法与安全部门在事发后也进行了调查与档案整理，但部分文件并未对外公开。
+        </p>
+
+        <p>
+          本地心理健康工作者提醒：对于经历过难以言说之伤的当事人，公开追问细节可能再次激发痛苦。若家属或当事人需要帮助，建议联络专业心理咨询或危机干预机构，优先关注安全与情绪调节。
+        </p>
+
+        <p>
+          本报整理了可公开取得的资料与若干非公开访谈的经整理节选，尊重多方隐私与心灵修复的需要。若读者有补充线索或希望了解相关心理支持资源，可通过本刊编辑部联系我们（仅限私密与保密沟通）。
+        </p>
+
+        <p class="handwritten" aria-hidden="true">
+            人们总相信自己所看见的，而有些真相往往藏在无法一眼看见的地方
+          </p>
+
+        <p style="font-family: Brush Script MT, Segoe Script, Caveat, KaiTi, cursive !important;
+        font-size: 15px; color:#fbfbfb">YU1108</p>
+      </article>
+
+      <!-- 侧栏 -->
+      <aside class="side" aria-labelledby="sideTitle">
+        <h3 id="sideTitle">要点速览</h3>
+        <div class="small">（为保护隐私，使用化名并删去可识别信息）</div>
+
+        <div class="fact">
+          <strong>时间：</strong>2006年（约 19 年前）<br>
+          <strong>地点：</strong>盼郦区沿海地带（概述，不公开坐标）
+        </div>
+
+        <div class="fact">
+          <strong>涉事：</strong>一对双胞胎；其中一人幸存（化名：小月），另一人遇难。
+        </div>
+
+        <div class="fact">
+          <strong>现状：</strong>幸存者成年后仍受记忆断片与情绪困扰，曾接受心理咨询。
+        </div>
+
+        <div class="fact">
+          <strong>提醒：</strong>若遇到创伤回忆，避免单独追问，建议寻求专业帮助与支持网络。
+        </div>
+
+        <h3>相关阅读</h3>
+        <div class="small">本刊档案 · 公开资料</div>
+        <div class="fact"><em>《往南时报》 2006/11/12 — 现场通报（节选）</em></div>
+        <div class="fact"><em>社区筹款与悼念记录（2006）</em></div>
+      </aside>
+    </div>
+
+    <div class="footer">
+      <div>盼郦日报 · 回顾专刊</div>
+      <div>编辑部（保护隐私，非调查报道）</div>
+    </div>
+  </div>
+</body>
+</html>
