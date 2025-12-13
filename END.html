@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>最后</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Microsoft YaHei", sans-serif;
+    background: #000;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  .call-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #111;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  #hangupBtn {
+    background: #e74c3c;
+    border: none;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  #callBody {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    cursor: pointer;
+  }
+  .message {
+    max-width: 70%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.1);
+    position: relative;
+  }
+  .message.left {
+    align-self: flex-start;
+  }
+  .message.right {
+    align-self: flex-end;
+  }
+  .message .name {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  .options {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .options button {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+    background: #555;
+    color: #fff;
+    cursor: pointer;
+  }
+  .options button:hover {
+    background: #777;
+  }
+</style>
+</head>
+<body>
+
+<div class="call-header">
+  <span id="callName">小悦</span>
+  <button id="hangupBtn">挂断</button>
+</div>
+
+<div id="callBody"></div>
+
+<script>
+  const callBody = document.getElementById('callBody');
+  const hangupBtn = document.getElementById('hangupBtn');
+
+  // 获取 truth 标志
+const truth = localStorage.getItem("truth");
+
+  // 对话列表
+  //{sender:"", text:""},
+  const dialogue = [
+    {sender:"她",text:"喂？"},
+    {sender:"我",text:"（她好像在等我先开口）"},
+  {sender:"choice", text:"她好像在等我先开口", options: truth == "1" ? [
+      {id:"panYue", text:"盼悦", next:[{sender:"我", text:"小盼。"},
+      {sender:"盼悦", text:"是，小希吗？"},
+      {sender:"我", text:"嗯，你突然失联了，我很担心你，所以登了...这个号"},
+      {sender:"盼悦", text:"（电话那边传来轻笑，还有隐约听不清的喧闹声）"}
+      ]},
+      {id:"panYu",text:"盼愉", next:[{sender:"我", text:".....盼愉。"},
+      {sender:"盼愉", text:"...你居然连这都知道了？"},
+      {sender:"我", text:"我的建议是不要什么都存到vx里"},
+      {sender:"盼愉", text:"哈哈哈哈..."},
+      {sender:"我", text:"（她笑个不停，我却听见那边隐约传来喧闹声）"},
+      {sender:"我", text:"你打算干什么"},
+      {sender:"盼愉", text:"你猜不到？我要破掉这个该死的双生制衡，顺便也让小悦回来"},
+      {sender:"我", text:"你有没有想过，这种秘法不仅不靠谱，还有可能会让你们受到反噬！"},
+      {sender:"盼愉", text:"我知道啊"},
+      {sender:"盼愉", text:"但这样生不如死地活着，还不如拼这一把呢"},
+      {sender:"我", text:"你至少想想小悦！她怎么办！"},
+      {sender:"盼愉", text:"呵"},
+      {sender:"盼愉", text:"你应该知道吧，她占据身体的时间比我要长。你以为我准备的一切，她不知道？"},
+      {sender:"我", text:"怎么可能，她不会随便伤害..."},
+      {sender:"盼愉", text:"她不会？她只是对你好而已，但说到底，她是我的妹妹。"},
+      {sender:"盼愉", text:"我和她共同占据这副原本属于我的身体，本来我觉得没关系的。可是你知道吗，我眼睁睁看着自己的能力随着盼安的成长而衰退。"},
+      {sender:"盼愉", text:"依靠顶替小悦才拥有的爱和关注又被盼安夺走了，甚至连曾经我拥有的爱也不再属于我！"},
+      {sender:"盼愉", text:"如果，如果只是因为我能力确实不如其他人，我是可以接受的。"},
+      {sender:"盼愉", text:"直到我发现小悦灵魂的存在，居然连她都比不上盼安。我那时才终于开始怀疑那座奇怪的庙。"},
+      {sender:"盼愉", text:"你知道当查到那两本秘录的时候，我觉得这一切有多荒谬吗？原来一切都是徒劳，努力也好、顶替也好，只要双生的制衡存在，我就一定是被牺牲的一方，去成就另一个人的光辉！"},
+      {sender:"盼愉", text:"可是凭什么啊，如果不是妈爸他们去庙里祈祷，如果不是盼安的出现，也许我就能按我所想的路走下去了。"},
+      {sender:"盼愉", text:"没有比较，只有全心全意的关注。也许我还是不如小悦，但妈妈会因为失而复得而对我更愧疚。她会很爱我和小悦，不再只是逼迫和偏爱！"},
+      {sender:"我", text:"这一切没这么简单的，阿姨她确实很强势，可是"},
+      {sender:"盼愉", text:"是啊，在我发现她对盼悦喜欢的东西随意处置的时候，我也意识到了这一切没那么容易实现。我想要的那种人生，恐怕是不可能了"},
+      {sender:"盼愉", text:"也许从我和小悦诞生开始，一切都不对，但事情发展到现在，我能做的只有为我和小悦夺回我们原本各自公平的人生"},
+        {sender:"我", text:"盼愉！"},
+        {sender:"盼愉", text:"......"},
+        {sender:"盼愉", text:"十多年没听过有人叫我这个名字了。"},
+        {sender:"我", text:"一定有更保险的方法的，你不要冲动"},
+        {sender:"盼愉", text:"我，不，我们都等不下去了"}
+      ]}
+    ] : [
+      {id:"panYue",text:"盼悦", next:[{sender:"我", text:"小盼。"},
+      {sender:"盼悦", text:"是，小希吗？"},
+      {sender:"我", text:"嗯，你突然失联了，我很担心你，所以登了...这个号"},
+      {sender:"盼悦", text:"（电话那边传来轻笑，还有隐约听不清的喧闹声）"}
+      ]}
+    ]
+  },
+  ];
+
+  let index = 0;
+let currentDialogue = dialogue;
+let optionVisible = false;
+
+function showNext() {
+  if(optionVisible) return;
+
+  if(index >= currentDialogue.length){
+    alert("对方已挂断电话");
+    localStorage.setItem("fromCall", "1");
+    location.href = "VX_01.html";
+    return;
+  }
+
+  const msg = currentDialogue[index];
+
+  if(msg.sender === "choice"){
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'options';
+    optionVisible = true;
+
+    msg.options.forEach(opt=>{
+      const btn = document.createElement('button');
+      btn.textContent = opt.text;
+      btn.onclick = e=>{
+        optionDiv.remove();
+        optionVisible = false;
+        // 保存选择标志
+        localStorage.setItem("callChoiceId", opt.id);
+        // 替换对话
+        currentDialogue = opt.next.concat(currentDialogue.slice(index+1));
+        index = 0;
+        showNext();
+      };
+      optionDiv.appendChild(btn);
+    });
+    callBody.appendChild(optionDiv);
+    callBody.scrollTop = callBody.scrollHeight;
+    index++;
+    return;
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = 'message ' + (msg.sender==="我"?"right":"left");
+  const nameDiv = document.createElement('div');
+  nameDiv.className = 'name';
+  nameDiv.textContent = msg.sender;
+  bubble.appendChild(nameDiv);
+
+  const textDiv = document.createElement('div');
+  textDiv.textContent = msg.text;
+  bubble.appendChild(textDiv);
+
+  callBody.appendChild(bubble);
+  callBody.scrollTop = callBody.scrollHeight;
+
+  index++;
+}
+
+callBody.addEventListener('click', showNext);
+
+hangupBtn.onclick = ()=>{
+  alert("有些话还没说完。");
+};
+
+showNext();
+</script>
+
+</body>
+</html>
