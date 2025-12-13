@@ -111,11 +111,7 @@ body{font-family:"Microsoft YaHei",sans-serif;background:#ededed;display:flex;fl
   const keywordResponses = {
     "小盼宝宝": { 
       "xixi2333":{
-      "拨打电话10131108":[
-        {sender:"小盼宝宝", text:"（解锁结局1 <a href='#' style='color:red;'>梦醒</a>）"},
-        {sender:"xixi2333", text:"什么意思呀？"},
-        {sender:"小盼宝宝", text:"<b>嘻嘻，你醒啦。</b>"}
-      ]
+      
     }
     },
     "官谷店":{
@@ -192,12 +188,12 @@ body{font-family:"Microsoft YaHei",sans-serif;background:#ededed;display:flex;fl
       {sender:"幸福平安",text:"怎么，你要来求子？你不是和小盼差不多年纪吗？"},
       {sender:"xixi2333",text:"不是不是...是小盼之前提起过那个地方。"},
       {sender:"幸福平安",text:"哦，那地方挺灵的，就是有点太灵了，我都是在拜过那里后怀上孩子的"},
-      {sender:"幸福平安",text:`也不知道是好事还是坏事...好像就是这几天，要到俩孩子<b>生日</b>了？`}
+      {sender:"幸福平安",text:`也不知道是好事还是坏事...说起来就是这几天去的，算着要到俩孩子<b>生日</b>了。`}
       ],
       "生日":[
       {sender:"xixi2333",text:"小盼生日已经过了，这周六。"},
       {sender:"幸福平安",text:"啊对，我都忘了。她还准我寄点家里的东西过去。这个没良心的，自从从家里搬出去后，就不怎么和我们联系了，连快递也很少收。"},
-      {sender:"幸福平安",text:"说起来我家安安也要过生日了，姐弟俩不是还约着要去海边玩嘛。"},
+      {sender:"幸福平安",text:"我家安安也要过生日了，姐弟俩不是还约着要去海边玩嘛。"},
       {sender:"xixi2333",text:"欸？阿姨你怎么知道，她弟弟不是说..."},
       {sender:"幸福平安",text:"嘁，你以为你们这些小孩在我面前能有啥秘密？"},
       {sender:"幸福平安",text:"安安和他姐习惯一样，都喜欢用重要的人名作密码。我一试一个准，不过居然不是我的名字。"},
@@ -285,7 +281,9 @@ body{font-family:"Microsoft YaHei",sans-serif;background:#ededed;display:flex;fl
         ]
       }
     }
-    };
+    ,
+    "小悦":{}
+  };
   
   // 渲染历史记录（去掉发送者名字）
 if (chatRecords[currentUser] && chatRecords[currentUser][currentChat]) {
@@ -363,6 +361,34 @@ const interval = setInterval(() => {
   
   // 回车发送
   chatInput.addEventListener("keypress",e=>{if(e.key==="Enter") sendBtn.click();});
+
+  
+  // 渲染自定义时间气泡
+  function addTimeBubble(content) {
+    const timeDiv = document.createElement("div");
+    timeDiv.className = "chat-time";
+    timeDiv.textContent = content;
+    chatBody.appendChild(timeDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  // 如果正在和“小悦”聊天，则隐藏输入栏并显示通话按钮
+if (currentChat === "小悦") {
+  const inputContainer = document.querySelector(".chat-input-container");
+  addTimeBubble("小悦？应该就是小盼吧，她居然这时候在线...如果我用这个账号联系她，也许能联系上。准备好的话就给她打个电话吧。");
+  inputContainer.innerHTML = `
+    <button id="callBtn" 
+      style="width:100%; padding:12px; background:#07c160; color:white; border:none; border-radius:8px; font-size:16px;">
+      📞 发起通话
+    </button>
+  `;
+
+  // 点击按钮跳转
+  document.getElementById("callBtn").onclick = () => {
+    location.href = "END.html";  // ← 你要跳转的页面
+  };
+}
+
   </script>
   
 

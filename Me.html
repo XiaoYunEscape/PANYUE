@@ -124,7 +124,8 @@ main {
       document.getElementById("loginBtn").onclick = ()=>{
         const name = document.getElementById("usernameInput").value.trim();
         const pwd = document.getElementById("passwordInput").value.trim();
-        if((name == "PAN1108" && pwd === "xiaoxi") || (name == "xixi2333" && pwd === "kaixin")){
+        if((name == "PAN1108" && pwd === "xiaoxi") || (name == "xixi2333" && pwd === "kaixin")
+        ||(name == "YU1108" && pwd === "panyu")){
           currentUser = name;
           localStorage.setItem("currentUser", currentUser);
           alert("登录成功：" + currentUser);

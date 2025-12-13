@@ -44,6 +44,7 @@ main {
     flex:1;
     padding:16px;
     overflow:auto;
+    padding-bottom: 60px; /* 给 footer 留空间 */
 }
 
 .moments-list {
@@ -127,14 +128,14 @@ main {
       {user:"小希", content:"今天完成了训练任务，好累啊", time:"1小时前"},
       {user:"妈妈", content:"做了美味的晚餐，大家快来吃~", time:"3小时前"},
       {user:"弟弟", content:"打通了游戏副本，好开心！", time:"昨天"}
-    ]
+    ],
+    "YU1108":[]
   };
 
   const moments = momentsMapping[currentUser] || [];
 
   if(moments.length === 0){
     main.innerHTML = '<div class="hint">暂无动态</div>';
-    return;
   }
 
   const list = document.createElement('div');

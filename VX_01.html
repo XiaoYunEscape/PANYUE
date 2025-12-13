@@ -193,6 +193,91 @@
         chatBody.scrollTop = 0;
       }, 800);
     });
+    window.addEventListener("DOMContentLoaded", () => {
+  const showNewMsg = localStorage.getItem("fromCall");
+  if (showNewMsg === "1") {
+    localStorage.removeItem("fromCall"); // 清除标记
+    const chatBody = document.getElementById("chatBody");
+
+    // 获取通话分支标志
+    const callChoiceId = localStorage.getItem("callChoiceId") || "default";
+
+    // 根据分支显示不同消息
+    const newMessagesData = {
+      "panYue": [
+        {type: "time", text: "以下为新消息"},
+        {type: "other", text: "小希"},
+        {type: "self", text: "小盼！你还好吗？"},
+        {type: "other", text: "嗯，我都处理好了"},
+        {type: "other", text: "如果你还愿意的话，我们见一面吧"},
+        {type: "other", text: "我在希溪市中心广场等你"},
+        {type: "self", text: "当然，等我！"},
+        {type: "other", text: "好"},
+        {type: "time", text: "她发来一张照片，是路人帮拍的她。照片里她站在阳光下，眼含真切的笑意。"},
+      ],
+      "panYu": [
+        {type: "time", text: "以下为新消息"},
+        {type: "other", text: "小希。"},
+        {type: "self", text:"...你是？"},
+        {type: "other", text: "是我。"},
+        {type: "self", text: "盼悦？你还好吗，她有没有伤害你？"},
+        {type: "self", text: "那个仪式你们还是举行了吗？"},
+        {type: "self", text: "小悦，你真的同意了她的做法？"},
+        {type: "other", text: "我......"},
+        {type: "other", text: "小希，我能理解姐姐她的想法，所以没有阻止她。对不起，你一定对我很失望。"},
+        {type: "other", text: "但仪式没有完成。我醒来时，脑子里关于一切的记忆都恢复了，我才终于知道我才是占据别人身体的那个人。"},
+        {type: "other", text: "可是姐姐却消失了，整个身体都由我掌控。妈妈和安安也都没事，所以我怀疑，会不会是姐姐她选择了牺牲自己。"},
+        {type: "self", text: "我记得当时，她好像情绪特别激动，倒是有可能临时起意做出其他匪夷所思的选择...."},
+        {type: "self", text: "可是为什么呢？"},
+        {type: "other", text: "我醒来的时候，看见手机界面停留在VX，好像是我朋友帮忙代收了快递，拍了照片过来。"},
+        {type: "other", text: "我看到物流信息一个是你买给我的，另一个是..妈妈她寄过来的。"},
+        {type: "other", text: "但图片被清理销毁了，我猜和姐姐看见的快递内容有关，但具体是什么，得等我回去看看。"},
+        {type: "other", text: "小希，这一切我很抱歉。希望一切问题都解决后，我们还是朋友。"},
+        {type: "self", text: "你家那些事，怕是很难解决完，不知道要等到什么时候。"},
+        {type: "other", text: "......对不起"},
+        {type: "self", text: "所以我们干脆现在就见面吧"},
+        {type: "self", text: "我买票过去，还是你买票过来？"},
+      ],
+      "default": [
+        {type: "time", text: "以下为新消息"},
+        {type: "other", text: "我们见一面吧"},
+        {type: "other", text: "我们见一面吧"},
+        {type: "other", text: "我们见一面吧"}
+      ]
+    };
+
+    const newMessages = newMessagesData[callChoiceId];
+
+    let i = 0;
+
+    function showNextMessage() {
+      if (i >= newMessages.length) return;
+
+      const msg = newMessages[i];
+      let el;
+
+      if (msg.type === "time") {
+        el = document.createElement("div");
+        el.className = "chat-time";
+        el.textContent = msg.text;
+      } else {
+        el = document.createElement("div");
+        el.className = `message ${msg.type}`;
+        el.innerHTML = `<div class="bubble">${msg.text}</div>`;
+      }
+
+      chatBody.appendChild(el);
+      chatBody.scrollTop = chatBody.scrollHeight;
+
+      i++;
+      // 每条消息间隔 800ms，可调整
+      setTimeout(showNextMessage, 1000);
+    }
+
+    // 延迟一点开始显示
+    setTimeout(showNextMessage, 500);
+  }
+});
   </script>
 </body>
 </html>
